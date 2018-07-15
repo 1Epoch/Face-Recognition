@@ -1,3 +1,5 @@
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 import random
 
 from keras.models import Model
@@ -109,8 +111,6 @@ class SiameseFaceNet(object):
         distance = Lambda(euclidean_distance,
                           output_shape=eucl_dist_output_shape)([processed_a, processed_b])
 
-        print ("Distance")
-        print (distance)
         model = Model([input_a, input_b], distance)
 
         rms = RMSprop()
@@ -196,6 +196,9 @@ class SiameseFaceNet(object):
             names.append(name)
             self.labels[name] = len(self.labels)
 
+        print (names)    
+        print (self.labels[name])
+
         self.config = dict()
         self.config['input_shape'] = self.input_shape
         self.config['labels'] = self.labels
@@ -209,6 +212,8 @@ class SiameseFaceNet(object):
         checkpoint = ModelCheckpoint(weight_file_path)
 
         t_x, t_y = self.create_pairs(database, names)
+
+        print (t_x)
 
         print('data set pairs: ', t_x.shape)
 

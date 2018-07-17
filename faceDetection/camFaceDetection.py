@@ -4,7 +4,7 @@ from numpy import array
 from PIL import Image
 
 
-cascPath = sys.argv[1]
+cascPath = "assets/haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 
 video_capture = cv2.VideoCapture(0)

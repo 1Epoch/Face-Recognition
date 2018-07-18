@@ -1,6 +1,9 @@
 import os
+import time
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
+print ("Time Taken to Load Libraries")
+start_time = time.time()
 from keras.models import Sequential
 from keras.layers import Conv2D, ZeroPadding2D, Activation, Input, concatenate
 from keras.models import Model
@@ -13,9 +16,8 @@ from keras.engine.topology import Layer
 from keras import backend as K
 K.set_image_data_format('channels_first')
 import cv2
-import os
+import h5py
 import numpy as np
-from numpy import genfromtxt
 import pandas as pd
 import tensorflow as tf
 from fr_utils import *
@@ -23,7 +25,7 @@ from inception_blocks_v2 import *
 
 FRmodel = faceRecoModel(input_shape=(3, 96, 96))
 print("Total Params:", FRmodel.count_params())
-print ("Hi")
+print("--- %s seconds ---" % (time.time() - start_time))
 
 def triplet_loss(y_true, y_pred, alpha = 0.2):
     """
@@ -58,22 +60,34 @@ def triplet_loss(y_true, y_pred, alpha = 0.2):
     
     return loss
 
-FRmodel.compile(optimizer = 'adam', loss = triplet_loss, metrics = ['accuracy'])
-load_weights_from_FaceNet(FRmodel)
+# FRmodel.compile(optimizer = 'adam', loss = triplet_loss, metrics = ['accuracy'])
+# FRmodel.save_weights("weights/model.h5")
+# print("Saved model to disk")
+# load_weights_from_FaceNet(FRmodel)
 
+print ("Time Taken to Load model")
+start_time = time.time()
+FRmodel.load_weights("weights/model.h5")
+print("Loaded model from disk")
+print("--- %s seconds ---" % (time.time() - start_time))
+
+print ("Time Taken to Create 12 Encodings")
+start_time = time.time()
 database = {}
 database["danielle"] = img_to_encoding("images/danielle.png", FRmodel)  
-database["younes"] = img_to_encoding("images/younes.jpg", FRmodel)
-database["tian"] = img_to_encoding("images/tian.jpg", FRmodel)
-database["andrew"] = img_to_encoding("images/andrew.jpg", FRmodel)
-database["kian"] = img_to_encoding("images/kian.jpg", FRmodel)
-database["dan"] = img_to_encoding("images/dan.jpg", FRmodel)
-database["sebastiano"] = img_to_encoding("images/sebastiano.jpg", FRmodel)
-database["bertrand"] = img_to_encoding("images/bertrand.jpg", FRmodel)
-database["kevin"] = img_to_encoding("images/kevin.jpg", FRmodel)
-database["felix"] = img_to_encoding("images/felix.jpg", FRmodel)
-database["benoit"] = img_to_encoding("images/benoit.jpg", FRmodel)
-database["arnaud"] = img_to_encoding("images/arnaud.jpg", FRmodel)  
+# database["younes"] = img_to_encoding("images/younes.jpg", FRmodel)
+# database["tian"] = img_to_encoding("images/tian.jpg", FRmodel)
+# database["andrew"] = img_to_encoding("images/andrew.jpg", FRmodel)
+# database["kian"] = img_to_encoding("images/kian.jpg", FRmodel)
+# database["dan"] = img_to_encoding("images/dan.jpg", FRmodel)
+# database["sebastiano"] = img_to_encoding("images/sebastiano.jpg", FRmodel)
+# database["bertrand"] = img_to_encoding("images/bertrand.jpg", FRmodel)
+# database["kevin"] = img_to_encoding("images/kevin.jpg", FRmodel)
+# database["felix"] = img_to_encoding("images/felix.jpg", FRmodel)
+# database["benoit"] = img_to_encoding("images/benoit.jpg", FRmodel)
+# database["arnaud"] = img_to_encoding("images/arnaud.jpg", FRmodel)
+database["keshav"] = img_to_encoding("images/keshav.jpg", FRmodel) 
+print("--- %s seconds ---" % (time.time() - start_time)) 
 
 def verify(image_path, identity, database, model):
     """
@@ -110,7 +124,7 @@ def verify(image_path, identity, database, model):
         
     return dist, door_open
 
-verify("images/camera_0.jpg", "younes", database, FRmodel)  
+# verify("images/camera_0.jpg", "younes", database, FRmodel)  
 
 def who_is_it(image_path, database, model):
     """
@@ -156,6 +170,8 @@ def who_is_it(image_path, database, model):
         
     return min_dist, identity  
 
-who_is_it("images/camera_3.jpg", database, FRmodel)    
-
+print ("Time Taken to Recognise Face")
+start_time = time.time()
+who_is_it("images/keshav1.jpg", database, FRmodel)    
+print("--- %s seconds ---" % (time.time() - start_time))
   

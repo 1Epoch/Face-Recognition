@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/anaconda3/envs/cv/bin/python"
+    "python.pythonPath": "/anaconda3/envs/cv/bin/python",
+    "python.linting.enabled": false
 }

@@ -34,7 +34,7 @@ while True:
 	# grab the frame from the threaded video stream and resize it
 	# to have a maximum width of 400 pixels
 	frame = vs.read()
-	frame = imutils.resize(frame, width=400)
+	frame = imutils.resize(frame, width=1000)
  
 	# grab the frame dimensions and convert it to a blob
 	(h, w) = frame.shape[:2]
@@ -66,10 +66,13 @@ while True:
 		# probability
 		text = "{:.2f}%".format(confidence * 100)
 		y = startY - 10 if startY - 10 > 10 else startY + 10
-		cv2.rectangle(frame, (startX, startY), (endX, endY),
-			(0, 0, 255), 2)
-		cv2.putText(frame, text, (startX, y),
-			cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
+		cv2.rectangle(frame, (startX, startY), (endX, endY), (0, 0, 255), 2)	
+		cv2.putText(frame, text, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
+		if (i % 100000 == 0):
+				crop_img = frame[startY:startY+h,startX:endX]
+				arr = np.array(crop_img)
+				print (arr.shape)
+				print (arr)    				
 
 	# show the output frame
 	cv2.imshow("Frame", frame)

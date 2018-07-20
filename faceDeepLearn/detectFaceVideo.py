@@ -8,6 +8,8 @@ import numpy as np
 import argparse
 import imutils
 import time
+from PIL import Image
+
 
 
 # construct the argument parse and parse the arguments
@@ -28,6 +30,8 @@ net = cv2.dnn.readNetFromCaffe(args["prototxt"], args["model"])
 print("[INFO] starting video stream...")
 vs = VideoStream(src=0).start()
 time.sleep(2.0)
+j=0
+text = "bharat"
 
 # loop over the frames from the video stream
 while True:
@@ -35,7 +39,7 @@ while True:
 	# to have a maximum width of 400 pixels
 	frame = vs.read()
 	frame = imutils.resize(frame, width=1000)
- 
+	j=j+1
 	# grab the frame dimensions and convert it to a blob
 	(h, w) = frame.shape[:2]
 	blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300, 300)), 1.0,
@@ -61,19 +65,23 @@ while True:
 		# object
 		box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
 		(startX, startY, endX, endY) = box.astype("int")
- 
+		
 		# draw the bounding box of the face along with the associated
 		# probability
-		text = "{:.2f}%".format(confidence * 100)
+		#text = "{:.2f}%".format(confidence * 100)
 		y = startY - 10 if startY - 10 > 10 else startY + 10
 		cv2.rectangle(frame, (startX, startY), (endX, endY), (0, 0, 255), 2)	
 		cv2.putText(frame, text, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
-		if (i % 100000 == 0):
-				crop_img = frame[startY:startY+h,startX:endX]
-				arr = np.array(crop_img)
-				print (arr.shape)
-				print (arr)    				
-
+		if j==24:
+			j=0
+			text="kesh"
+			crop_img = frame[startY:startY+h,startX:endX]
+			#cv2.putText(frame, text1, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
+			crop_img1=cv2.resize(crop_img, (96,96), interpolation = cv2.INTER_AREA)
+			arr = np.array(crop_img1)
+			print (arr.shape)
+			#img = Image.fromarray(arr, 'RGB')
+			#img.show()
 	# show the output frame
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF

@@ -31,6 +31,7 @@ print("[INFO] starting video stream...")
 vs = VideoStream(src=0).start()
 time.sleep(2.0)
 j=0
+change = True
 text = "bharat"
 
 # loop over the frames from the video stream
@@ -38,8 +39,10 @@ while True:
 	# grab the frame from the threaded video stream and resize it
 	# to have a maximum width of 400 pixels
 	frame = vs.read()
-	frame = imutils.resize(frame, width=1000)
+	frame = imutils.resize(frame, width=400)
 	j=j+1
+	if (j == 25):
+    		j =  0
 	# grab the frame dimensions and convert it to a blob
 	(h, w) = frame.shape[:2]
 	blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300, 300)), 1.0,
@@ -72,9 +75,14 @@ while True:
 		y = startY - 10 if startY - 10 > 10 else startY + 10
 		cv2.rectangle(frame, (startX, startY), (endX, endY), (0, 0, 255), 2)	
 		cv2.putText(frame, text, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
+		print ("Debugging")
+		print (j)
 		if j==24:
-			j=0
-			text="kesh"
+			if change:
+    				text ="kesh"
+			else:
+    				text = "Bg"	
+			change = not change	
 			crop_img = frame[startY:startY+h,startX:endX]
 			#cv2.putText(frame, text1, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
 			crop_img1=cv2.resize(crop_img, (96,96), interpolation = cv2.INTER_AREA)
